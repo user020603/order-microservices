@@ -1,7 +1,10 @@
 package main
 
 import (
+	"context"
+	"log"
 	"order/config"
+	"order/events"
 	"order/handler"
 	"order/model"
 
@@ -15,6 +18,13 @@ func main() {
     }
     
     redis := config.SetupRedis()
+    kafkaClient, err := events.NewKafkaClient()
+    if err != nil {
+        log.Fatalf("Failed to create Kafka client: %v", err)
+    }
+
+    ctx := context.Background()
+    kafkaClient.ConsumeUserEvents(ctx)
     
     // Auto migrate the schema
     db.AutoMigrate(&model.Order{}, &model.Item{})

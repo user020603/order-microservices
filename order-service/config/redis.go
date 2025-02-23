@@ -7,8 +7,8 @@ import (
 
 func SetupRedis() *redis.Client {
     return redis.NewClient(&redis.Options{
-        Addr: fmt.Sprintf("%s:%s", 
-			"redis",
+        Addr: fmt.Sprintf("%s:%d", 
+            "redis",
             6379,
         ),
     })

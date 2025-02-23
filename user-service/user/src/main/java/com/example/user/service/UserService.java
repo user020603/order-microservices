@@ -1,6 +1,8 @@
 package com.example.user.service;
 
 import com.example.user.dto.UserDTO;
+import com.example.user.event.UserEvent;
+import com.example.user.kafka.KafkaProducer;
 import com.example.user.model.User;
 import com.example.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 public class UserService {
     private final UserRepository userRepository;
     private final RedisTemplate<String, UserDTO> redisTemplate;
+    private final KafkaProducer kafkaProducer;
 
     @Cacheable(value = "users", key = "#id")
     public UserDTO getUser(Long id) {
@@ -29,6 +32,15 @@ public class UserService {
 
         User user = convertToEntity(userDTO);
         user = userRepository.save(user);
+
+        UserEvent event = new UserEvent();
+        event.setEventType("CREATED");
+        event.setUserId(user.getId());
+        event.setUsername(user.getUsername());
+        event.setEmail(user.getEmail());
+        kafkaProducer.sendUserEvent(event);
+        System.out.println("Produce send message from Kafka");
+
         return convertToDTO(user);
     }
 

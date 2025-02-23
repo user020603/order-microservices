@@ -3,6 +3,8 @@ package handler
 import (
 	"context"
 	"encoding/json"
+	"log"
+	"order/events"
 	"order/model"
 	"time"
 
@@ -14,6 +16,7 @@ import (
 type OrderHandler struct {
     db    *gorm.DB
     redis *redis.Client
+    kafka *events.KafkaClient
 }
 
 func NewOrderHandler(db *gorm.DB, redis *redis.Client) *OrderHandler {
@@ -30,6 +33,19 @@ func (h *OrderHandler) Create(c *gin.Context) {
     if err := h.db.Create(&order).Error; err != nil {
         c.JSON(500, gin.H{"error": err.Error()})
         return
+    }
+
+    // Send order created event
+    event := events.OrderEvent{
+        EventType:  "CREATED",
+        OrderID:    order.ID,
+        UserID:     order.UserID,
+        TotalPrice: order.Total,
+        Status:     order.Status,
+    }
+    
+    if err := h.kafka.SendOrderEvent(event); err != nil {
+        log.Printf("Error sending order event: %v", err)
     }
     
     c.JSON(200, order)
