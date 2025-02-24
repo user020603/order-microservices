@@ -1,0 +1,8 @@
+2025/02/24 08:15:08 [notice] 32#32: signal process started
+2025/02/24 08:15:15 [notice] 49#49: signal process started
+2025/02/24 08:48:33 [error] 21#21: *35 access forbidden by rule, client: 172.18.0.1, server: localhost, request: "GET /nginx_status HTTP/1.1", host: "localhost:8082"
+2025/02/24 08:50:33 [emerg] 1#1: invalid condition "$api_client" in /etc/nginx/conf.d/api_gateway.conf:48
+2025/02/24 08:51:44 [emerg] 1#1: invalid condition "$api_client" in /etc/nginx/conf.d/api_gateway.conf:48
+2025/02/24 08:52:39 [emerg] 1#1: invalid condition "$api_client" in /etc/nginx/conf.d/api_gateway.conf:48
+2025/02/24 08:52:47 [emerg] 1#1: invalid condition "$api_client" in /etc/nginx/conf.d/api_gateway.conf:48
+2025/02/24 09:33:00 [emerg] 1#1: zero size shared memory zone "api_limit"

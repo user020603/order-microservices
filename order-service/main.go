@@ -30,7 +30,7 @@ func main() {
     db.AutoMigrate(&model.Order{}, &model.Item{})
     
     router := gin.Default()
-    orderHandler := handler.NewOrderHandler(db, redis)
+    orderHandler := handler.NewOrderHandler(db, redis, kafkaClient)
     
     orders := router.Group("/api/orders")
     {
