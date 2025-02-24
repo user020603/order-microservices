@@ -19,8 +19,12 @@ type OrderHandler struct {
     kafka *events.KafkaClient
 }
 
-func NewOrderHandler(db *gorm.DB, redis *redis.Client) *OrderHandler {
-    return &OrderHandler{db: db, redis: redis}
+func NewOrderHandler(db *gorm.DB, redis *redis.Client, kafka *events.KafkaClient) *OrderHandler {
+    return &OrderHandler{
+        db:    db,
+        redis: redis,
+        kafka: kafka,
+    }
 }
 
 func (h *OrderHandler) Create(c *gin.Context) {
@@ -37,7 +41,7 @@ func (h *OrderHandler) Create(c *gin.Context) {
 
     // Send order created event
     event := events.OrderEvent{
-        EventType:  "CREATED",
+        EventType:  "ORDER_CREATED",
         OrderID:    order.ID,
         UserID:     order.UserID,
         TotalPrice: order.Total,
